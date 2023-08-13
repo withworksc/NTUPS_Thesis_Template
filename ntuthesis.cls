@@ -42,7 +42,7 @@
 % 變數: 中文翻譯
 % Variables: Translation (Chinese)
 \newcommand{\ntu@verificationletter@zh}{口試委員審定書}
-\newcommand{\ntu@tableofcontents@zh}{目錄}
+\newcommand{\ntu@tableofcontents@zh}{章節目錄}
 \newcommand{\ntu@listoffigures@zh}{圖目錄}
 \newcommand{\ntu@listoftables@zh}{表目錄}
 \newcommand{\ntu@denotation@zh}{符號列表}
@@ -52,10 +52,8 @@
 \newcommand{\ntu@keyword@zh}{關鍵字：}
 \newcommand{\ntu@kwsymbol@zh}{、}
 \newcommand{\ntu@appendix@zh}{附錄}
-\newcommand{\ntu@figurename@zh}{圖}
-\newcommand{\ntu@tablename@zh}{表}
 
-\newcommand{\ntu@titlechapter@zh}{第\CJKnumber{\thechapter}章}
+\newcommand{\ntu@titlechapter@zh}{\Kai{第\CJKnumber{\thechapter}章}}
 \newcommand{\ntu@titlechaptertoc@zh}{第\CJKnumber{\thecontentslabel}章}
 
 % 變數: 英文翻譯
@@ -71,22 +69,20 @@
 \newcommand{\ntu@keyword@en}{Keywords:~}
 \newcommand{\ntu@kwsymbol@en}{,~}
 \newcommand{\ntu@appendix@en}{Appendix}
-\newcommand{\ntu@figurename@en}{Figure}
-\newcommand{\ntu@tablename@en}{Table}
 
 \newcommand{\ntu@titlechapter@en}{Chapter~\thechapter}
 \newcommand{\ntu@titlechaptertoc@en}{Chapter~\thecontentslabel}
 
 % 變數: 版面設定
 % Variables: Layouts
-\newcommand{\ntu@geometry@main}{top=3cm, bottom=2cm, left=3cm, right=3cm}
+\newcommand{\ntu@geometry@main}{top=3cm, bottom=2.5cm, left=3cm, right=3cm}
 \newcommand{\ntu@geometry@cover}{top=3cm, bottom=3cm, left=3cm, right=3cm}
 
 \newcommand{\ntu@tocvspace}{1em}
 \newcommand{\ntu@tocchaptersize@zh}{4.5em}
 \newcommand{\ntu@tocchaptersize@en}{5.5em}
 
-\newcommand{\ntu@tocsecindent@zh}{1.5em}
+\newcommand{\ntu@tocsecindent@zh}{2.5em}
 \newcommand{\ntu@tocsecnumwidth@zh}{3.0em}
 \newcommand{\ntu@tocsubsecindent@zh}{3.0em}
 \newcommand{\ntu@tocsubsecnumwidth@zh}{3.0em}
@@ -256,15 +252,6 @@
     },
     default = chinese,
   },
-  fontset = {
-    choices = {
-      default,
-      system,
-      overleaf,
-      template,
-    },
-    default = default,
-  },
   watermark = {
     choices = {
       true,
@@ -369,7 +356,7 @@
 % Assign variables according to configs.
 \ifthenelse{\equal{\ntu@degreeset}{master}}{
   \newcommand{\ntu@degree}{碩士}
-  \newcommand{\ntu@degree@en}{Master}
+  \newcommand{\ntu@degree@en}{Master's}
   \newcommand{\ntu@type}{論文}
   \newcommand{\ntu@type@en}{Thesis}
 }
@@ -396,14 +383,16 @@
   \newcommand{\ntu@verificationletter}{\ntu@verificationletter@zh}
   \newcommand{\ntu@bibliography}{\ntu@bibliography@zh}
   \newcommand{\ntu@appendix}{\ntu@appendix@zh}
-  \newcommand{\ntu@figurename}{\ntu@figurename@zh}
-  \newcommand{\ntu@tablename}{\ntu@tablename@zh}
 
   % 設定單位
   \newcommand{\ntu@tocsecindent}{\ntu@tocsecindent@zh}
   \newcommand{\ntu@tocsecnumwidth}{\ntu@tocsecnumwidth@zh}
   \newcommand{\ntu@tocsubsecindent}{\ntu@tocsubsecindent@zh}
   \newcommand{\ntu@tocsubsecnumwidth}{\ntu@tocsubsecnumwidth@zh}
+
+  % 圖表標題為中文
+  \renewcommand{\figurename}{\Kai{圖}} % renewing table label in chinese
+  \renewcommand{\tablename}{\Kai{表}} % renewing figure label in chinese
 }
 
 \ifthenelse{\equal{\ntu@language}{english}}{
@@ -421,8 +410,6 @@
   \newcommand{\ntu@verificationletter}{\ntu@verificationletter@en}
   \newcommand{\ntu@bibliography}{\ntu@bibliography@en}
   \newcommand{\ntu@appendix}{\ntu@appendix@en}
-  \newcommand{\ntu@figurename}{\ntu@figurename@en}
-  \newcommand{\ntu@tablename}{\ntu@tablename@en}
 
   % 設定單位
   \newcommand{\ntu@tocsecindent}{\ntu@tocsecindent@en}
@@ -490,18 +477,17 @@
 \RequirePackage{datetime}
 \RequirePackage{CJKnumb}
 \RequirePackage{fp, calc}
-\RequirePackage{hyperref}
+\RequirePackage[hidelinks]{hyperref}
 \RequirePackage{paralist}
-\RequirePackage{footmisc}
+\RequirePackage[flushmargin, bottom]{footmisc}
 \RequirePackage{caption}
-\RequirePackage[labelformat=simple]{subcaption}
+\RequirePackage{subcaption}
+\RequirePackage{amsmath, amsthm, amssymb}
+\RequirePackage{unicode-math}
 
 % --------------------------------------------------
 % 10 套件設定 (Package Settings)
 % --------------------------------------------------
-
-% [圖表目錄]
-\graphicspath{{./figures/}}
 
 % [文章排版]
 %
@@ -519,40 +505,41 @@
 % - \setCJKmonofont{}			中文等寬字體
 %
 
-\ifthenelse{\equal{\ntu@fontset}{default}}{
-  \setmainfont{Times New Roman}[
-    Path = \ntu@path@font ,
-    Extension = .ttf ,
-    BoldFont = *-Bold ,
-    ItalicFont = *-Italic ,
-    BoldItalicFont = *-BoldItalic, ]
-  \setCJKmainfont{BiauKai}[
-    Path = \ntu@path@cjkfont ,
-    Extension = .ttf , ]
-}
+\setmainfont{Times New Roman}[
+ Path = \ntu@path@font ,
+ Extension = .ttf ,
+ BoldFont = *-Bold ,
+ ItalicFont = *-Italic ,
+ BoldItalicFont = *-BoldItalic,
+]
 
-\ifthenelse{\equal{\ntu@fontset}{template}}{
-  \setmainfont{Times New Roman}[
-    Path = \ntu@path@font ,
-    Extension = .ttf ,
-    BoldFont = *-Bold ,
-    ItalicFont = *-Italic ,
-    BoldItalicFont = *-BoldItalic, ]
-  \setCJKmainfont{BiauKai}[
-    Path = \ntu@path@cjkfont ,
-    Extension = .ttf ,
-    BoldFont = Kaiti-Black, ]
-}
-
-\ifthenelse{\equal{\ntu@fontset}{overleaf}}{
-  \setmainfont{Times New Roman}
-  \setsansfont{Droid Sans}
-  \setmonofont{Courier New}
-  \setCJKmainfont{AR PL KaitiM Big5}
-  \setCJKsansfont{AR PL KaitiM Big5}
-  \setCJKmonofont{AR PL KaitiM Big5}
-}
-
+\setCJKmainfont{BiauKai}[
+  Path = \ntu@path@cjkfont ,
+  Extension = .ttf ,
+]
+\setCJKsansfont{NotoSerifTC-Regular}[
+  Path = \ntu@path@cjkfont ,
+  Extension = .otf ,
+  BoldFont = NotoSerifTC-Bold, 
+]
+\newCJKfontfamily\Kai{BiauKai}[
+  Path = \ntu@path@cjkfont ,
+  Extension = .ttf ,
+]
+\newCJKfontfamily\Song{SourceHanSerifTC-Regular}[
+  Path = \ntu@path@cjkfont ,
+  Extension = .otf , 
+  BoldFont = SourceHanSerifTC-Bold ,
+]
+\setmathfont{texgyrepagella-math}[
+  Path = \ntu@path@font ,
+  Extension = .otf ,
+]
+\newCJKfontfamily\San{NotoSansTC-Regular}[
+  Path = \ntu@path@cjkfont ,
+  Extension = .otf ,
+  BoldFont = NotoSansTC-Bold,
+]
 % [顏色設定]
 %
 
@@ -560,36 +547,37 @@
 %
 \RequirePackage{geometry}
 \geometry{
-  top=3cm,
-  bottom=2cm,
-  left=3cm,               % inner=3cm
-  right=3cm               % outer=3cm
+  top = 2cm,
+  bottom = 2cm,
+  left = 3cm,               % inner=3cm
+  right = 3cm               % outer=3cm
 }
 
 % [連結設定]
-%
-\hypersetup{
-  colorlinks=true,
-  linkcolor=black,
-  filecolor=gray,
-  anchorcolor=blue,
-  citecolor=blue
-}
+
+% \hypersetup{
+%   colorlinks,
+%   linkcolor=black,
+%   anchorcolor=blue
+%   citecolor=green
+% }
 
 % [目錄格式]
 %
-\addtocontents{toc}                                         % 修改目錄樣式
-{~\hfill\textbf{Page}\par}
-{}
-{}
-{}
+% \addtocontents{toc}                                         % 修改目錄樣式
+% {~\hfill\textbf{頁碼}\par}
+% {}
+% {}
+% {}
 
 % \titlecontents{標題名稱}[左間距]{標題格式}{標題內容}{無序號標題}{指引線與頁碼}[下間距]
 \titlecontents{chapter}[0em]                                % 修改目錄樣式
-{\addvspace{0.5em}\normalsize\bfseries\protect}
+{\addvspace{0.5em}\large\bfseries\protect}
 {\fboxrule=0pt\fboxsep=0pt\framebox[\ntu@tocchaptersize][l]{\ntu@titlechaptertoc}}
 {}
 {\hfill\contentspage}
+
+\titlespacing*{\chapter}{0pt}{-30pt}{10pt}
 
 \setlength{\cftbeforesecskip}{8pt}                          % 修改目錄間距
 \setlength{\cftbeforesubsecskip}{8pt}
@@ -600,6 +588,9 @@
 % \cftsetindents{entry}{indent}{numwidth}
 \cftsetindents{section}{\ntu@tocsecindent}{\ntu@tocsecnumwidth}
 \cftsetindents{subsection}{\ntu@tocsubsecindent}{\ntu@tocsubsecnumwidth}
+
+\titlespacing*{\section}{0pt}{0pt}{0pt}
+\titlespacing*{\subsection}{0pt}{0pt}{0pt}
 
 % [頁首頁尾]
 %
@@ -615,10 +606,13 @@
 % - before: 標題內容前增加文字
 % - after: 標題內容後增加文字
 %
+
+\newcommand{\bigsize}{\fontsize{24pt}{25pt}\selectfont}
+
 \titleformat{\chapter}                      % 設置 Chapter 格式
-{\centering\Huge\bfseries}                  % 定義 format
+{\centering\bigsize\Kai\bfseries}                  % 定義 format
 {\ntu@titlechapter}              		    % 定義 label
-{1em}                                       % 定義 sep
+{0.5em}                                       % 定義 sep
 {}                                          % before
 
 % [圖表標題]
@@ -629,18 +623,9 @@
 \captionsetup[figure]{position=bottom,belowskip={12bp-\intextsep},aboveskip=6bp}
 \captionsetup[sub]{skip=6bp}
 
-% [引用格式]
-%
-\renewcommand\thesubfigure{~(\alph{subfigure})}
-
 % --------------------------------------------------
 % 08 自訂命令（Custom Commands）
 % --------------------------------------------------
-
-% [添加路徑]
-\newcommand\appendgraphicspath[1]{
-  \g@addto@macro\Ginput@path{#1}
-}
 
 % [中文縮進]
 % - \Eindent                    縮進
@@ -736,7 +721,7 @@
         \ntu@author\par\ntu@author@en\par
         \vfill
         指導教授: \ntu@advisor~博士\par
-        Advisor: \ntu@advisor@en~Ph.D.\par
+        Advisor: \ntu@advisor@en, ~Ph.D.\par
         \vfill
         中華民國~\ntu@format@date{\ntu@date@zh@digit@short}{\ntu@date}\par
         \ntu@format@date{\ntu@date@en@short}{\ntu@date}
@@ -749,55 +734,16 @@
   \restoregeometry
 }
 
-% [生成口委審定書]
+
+% [生成口委審定書: 新版]
 % Generate the verification letter page
-%
-\newcommand{\makeverification}{
+\newcommand\makeverification[1]{
   \clearpage
   \phantomsection
-  \ntu@setgeometry{\ntu@geometry@main}
-  \pagenumbering{roman}
+  \begin{center}
+  \includegraphics[width = \textwidth]{#1}
+  \end{center}
   \addcontentsline{toc}{chapter}{\ntu@verificationletter}
-  \begin{singlespace}
-    %  口委審定書標題 (24, 36) (26, 39)
-    %  論文題目 (20, 30)
-    \begin{center}
-      \fontsize{24}{36}\selectfont
-      {\ntu@university}{\ntu@degree}學位{\ntu@type}\par
-      \fontsize{26}{39}\selectfont
-      口試委員會審定書\par
-      \vfill
-      \fontsize{20}{30}\selectfont
-      {\ntu@title}\par
-      {\ntu@title@en}\par
-    \end{center}
-
-    % 口委審定書內容 (16, 24)
-    \vfill
-    \fontsize{16}{24}\selectfont
-    \Eindent
-    本論文係{\ntu@author}君（\ntu@ID）在{\ntu@university}{\ntu@institute}完成之{\ntu@degree}學位{\ntu@type}，於民國{\ntu@format@date{\ntu@date@zh@digit}{\ntu@oraldate}}承下列考試委員審查通過及口試及格，特此證明\par
-  \end{singlespace}
-
-  \begin{doublespace}
-    % 口委簽名表格 (16, 24)
-    \begin{center}
-      \vfill
-      \fontsize{16}{24}\selectfont
-      \begin{tabularx}{\textwidth}{Xl}
-        {\hfill}口試委員：{\hfill}& \rule{11.5cm}{1pt}      \\
-          & \multicolumn{1}{c}{（指導教授）}                \\
-          & \rule{5cm}{1pt}\hspace{1.5cm}\rule{5cm}{1pt}  \\
-          & \rule{5cm}{1pt}\hspace{1.5cm}\rule{5cm}{1pt}  \\
-          & \rule{5cm}{1pt}\hspace{1.5cm}\rule{5cm}{1pt}  \\
-          & \rule{5cm}{1pt}\hspace{1.5cm}\rule{5cm}{1pt}  \\
-        所{\hfill}長：{\hfill}& \rule{9cm}{1pt}
-      \end{tabularx}
-    \end{center}
-  \end{doublespace}
-
-  % 恢復預設板型
-  \restoregeometry
 }
 
 % [生成目錄]
@@ -806,35 +752,43 @@
 \renewcommand{\contentsname}{\centerline{\ntu@tableofcontents}}
 \newcommand{\maketableofcontents}{
   \cleardoublepage
+  \setlength{\cftbeforetoctitleskip}{-2pt}
   \phantomsection
   \addcontentsline{toc}{chapter}{\ntu@tableofcontents}
   \tableofcontents
 }
 
-\let\oldnumberline\numberline
 \renewcommand{\listfigurename}{\centerline{\ntu@listoffigures}}
 \newcommand{\makelistoffigures}{
-  \cleardoublepage
+  \clearpage
+  \setlength{\cftbeforeloftitleskip}{-1.5pt}
   \phantomsection
   \addcontentsline{toc}{chapter}{\ntu@listoffigures}
-  \renewcommand{\numberline}{\figurename~\oldnumberline}
   \listoffigures
 }
 
 \renewcommand{\listtablename}{\centerline{\ntu@listoftables}}
 \newcommand{\makelistoftables}{
-  \cleardoublepage
+  \clearpage
+  \setlength{\cftbeforelottitleskip}{-1.5pt}
   \phantomsection
   \addcontentsline{toc}{chapter}{\ntu@listoftables}
-  \renewcommand{\numberline}{\tablename~\oldnumberline}
   \listoftables
 }
+
+% [定義前文參數]
+% \frontmatter
+\newcommand{\frontmatter}{
+  \pagenumbering{Roman}
+}
+
 
 % [正文開始]
 % \mainmatter
 %
 \newcommand{\mainmatter}{
-  \cleardoublepage
+  \let\cleardoublepage\clearpage
+  \Song
   \ntu@setgeometry{\ntu@geometry@main}
   \pagenumbering{arabic}
   \fontsize{12}{18}\selectfont
@@ -844,7 +798,7 @@
 % \refmatter
 %
 \newcommand{\refmatter}{
-  \cleardoublepage
+  % \cleardoublepage
   \phantomsection
   \renewcommand{\bibname}{\ntu@bibliography}
   \addcontentsline{toc}{chapter}{\ntu@bibliography}
@@ -891,14 +845,14 @@
 \newenvironment{acknowledgement}{
   \chapter*{\centering \ntu@acknowledgement}
   \addcontentsline{toc}{chapter}{\ntu@acknowledgement}
-  \fontsize{12}{18}\selectfont
+  \fontsize{12}{18}\Song\setstretch{2}
 }
 
 % [摘要環境]
 % Abstract Environment
 %
 \renewenvironment{abstract}{
-  \fontsize{12}{18}\selectfont
+  \fontsize{12}{18}\Song\setstretch{2}
   \chapter*{\centering \ntu@abstract@zh}
   \addcontentsline{toc}{chapter}{\ntu@abstract@zh}
 }{
@@ -908,7 +862,7 @@
 }
 
 \newenvironment{abstract*}{
-  \fontsize{12}{24}\selectfont
+  \fontsize{12}{24}\selectfont\setstretch{2}
   \chapter*{\centering \ntu@abstract@en}
   \addcontentsline{toc}{chapter}{\ntu@abstract@en}
 }{
@@ -924,7 +878,7 @@
 % 根據設定決定是否添加浮水印
 % Insert watermark according to the config.
 %
-\ifthenelse{\equal{\ntu@watermark}{true}}{\makewatermark{0.25}{seal}}{}
+\ifthenelse{\equal{\ntu@watermark}{true}}{\makewatermark{0.5}{figures/seal.pdf}}{}
 
 % 根據設定決定是否添加數位標識
 % Insert DOI according to the config.
@@ -936,6 +890,6 @@
 % 1.6：2.0 倍行距
 \setstretch{1.6}
 
-% 套用翻譯
-\renewcommand{\figurename}{\ntu@figurename}
-\renewcommand{\tablename}{\ntu@tablename}
+% \setlength{\skip\footins}{1em}
+\setlength{\footnotesep}{1em} % 註腳各項目間距
+\renewcommand{\footnotelayout}{\setstretch{1.5}}

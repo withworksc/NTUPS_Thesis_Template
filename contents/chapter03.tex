@@ -1,11 +1,12 @@
 % !TeX root = ../main.tex
 
-\chapter{中文測試}
+\chapter{研究設計與方法}
 
-\section{史記}
+\section{模型設定}
 
-\zhlipsum[name=xiangyu]
+M-Estimation的目標試如等式\eqref{eq:m_esti}所示：
+\begin{equation}
+\label{eq:m_esti}
+\hat{\theta} = \argmin_{\theta \in \Theta} \sum_{i = 1}^n \nabla_{\theta} q (w_i, \theta) \triangleq \argmin_{\theta \in \Theta} \sum_{i = 1}^n s_i(\theta)
+\end{equation}
 
-\section{山海經}
-
-\zhlipsum[name=nanshanjing]
